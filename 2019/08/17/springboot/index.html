@@ -7,17 +7,17 @@
   
   <title>springboot学习 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。  12345678910111213&amp;lt;!-- 父项目--&amp;g">
+  <meta name="description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="springboot学习">
 <meta property="og:url" content="http://yoursite.com/2019/08/17/springboot/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。  12345678910111213&amp;lt;!-- 父项目--&amp;g">
+<meta property="og:description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-01T03:57:46.563Z">
+<meta property="og:updated_time" content="2019-09-01T04:16:45.961Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springboot学习">
-<meta name="twitter:description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。  12345678910111213&amp;lt;!-- 父项目--&amp;g">
+<meta name="twitter:description" content="创建一个Maven工程（） 在pom.xml中引入springboot的起步依赖  先引入父依赖 添加web功能的启动坐标 可添加依赖设置成热部署compiler-&amp;gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -93,6 +93,8 @@
 <li>添加web功能的启动坐标</li>
 <li>可添加依赖设置成热部署compiler-&gt;bulid project automatically和shift+ctrl+alt+/ 点registry，勾选compiler.automake….，即可。</li>
 </ol>
+<a id="more"></a>
+
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 父项目--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line"></span><br><span class="line"> <span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-dependencies<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">relativePath</span>&gt;</span>../../spring-boot-dependencies<span class="tag">&lt;/<span class="name">relativePath</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
 <p>spring  boot的版本仲裁中心：</p>
@@ -124,7 +126,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck00gi19s000110we10c16qz3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck00gsc6o0001vgweu8o4wrax" class="article-share-link">Share</a>
       
       
     </footer>
