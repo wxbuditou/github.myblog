@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="当我们协商Controller之后，就标记了它为spring的一个组件，并且是控制器的组件，此时我们的handlermapping会去扫描寻找这个controller是否与之匹配，如果发现撇皮就把这里处理的工作交给它。 匹配的规则又是什么呢 具体的匹配是通过请求的路径进行匹配的 @RequestMapping(URL) 此时就是通过这个URL进行匹配 可以写在方法上，类上 转发与重定向 转发到页面">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/2019/08/25/springmvc/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="当我们协商Controller之后，就标记了它为spring的一个组件，并且是控制器的组件，此时我们的handlermapping会去扫描寻找这个controller是否与之匹配，如果发现撇皮就把这里处理的工作交给它。 匹配的规则又是什么呢 具体的匹配是通过请求的路径进行匹配的 @RequestMapping(URL) 此时就是通过这个URL进行匹配 可以写在方法上，类上 转发与重定向 转发到页面">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="d:%5Cblog%5Csource_posts%5CImage%5C1567179165762.png">
+<meta property="og:updated_time" content="2019-08-30T15:47:04.605Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description" content="当我们协商Controller之后，就标记了它为spring的一个组件，并且是控制器的组件，此时我们的handlermapping会去扫描寻找这个controller是否与之匹配，如果发现撇皮就把这里处理的工作交给它。 匹配的规则又是什么呢 具体的匹配是通过请求的路径进行匹配的 @RequestMapping(URL) 此时就是通过这个URL进行匹配 可以写在方法上，类上 转发与重定向 转发到页面">
+<meta name="twitter:image" content="d:%5Cblog%5Csource_posts%5CImage%5C1567179165762.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-springmvc" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/25/springmvc/" class="article-date">
+  <time datetime="2019-08-25T07:32:28.723Z" itemprop="datePublished">2019-08-25</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>当我们协商Controller之后，就标记了它为spring的一个组件，并且是控制器的组件，此时我们的handlermapping会去扫描寻找这个controller是否与之匹配，如果发现撇皮就把这里处理的工作交给它。</p>
+<p>匹配的规则又是什么呢</p>
+<p>具体的匹配是通过请求的路径进行匹配的</p>
+<p>@RequestMapping(URL)</p>
+<p>此时就是通过这个URL进行匹配</p>
+<p>可以写在方法上，类上</p>
+<h1 id="转发与重定向"><a href="#转发与重定向" class="headerlink" title="转发与重定向"></a>转发与重定向</h1><ul>
+<li>转发到页面，默认到选项</li>
+<li>重定向到页面 redirect：path</li>
+<li>转发到另一个控制器 forword：path</li>
+</ul>
+<h1 id="关于springmvc访问web测试"><a href="#关于springmvc访问web测试" class="headerlink" title="关于springmvc访问web测试"></a>关于springmvc访问web测试</h1><ul>
+<li>基于原声的servletapi可直接访问</li>
+<li>request</li>
+<li>response</li>
+<li>session</li>
+</ul>
+<h2 id="RequestMapping解析"><a href="#RequestMapping解析" class="headerlink" title="RequestMapping解析"></a>RequestMapping解析</h2><ul>
+<li>value 写的是路径，是一个数组的形式，可以匹配多个路径</li>
+<li>path 是value的别名，二者任选其一，作用一样的 </li>
+<li>method 是可以指定可以访问的请求的类型，比如get，post</li>
+<li>params 可以去指定参数，你还可以去限定指定某个值</li>
+<li>headers 能够影响浏览器的行为</li>
+<li>cousumers 消费者，媒体类型，可以限定必须为appication/json；charset=UTF-8</li>
+<li>produces 产生相应的类型</li>
+</ul>
+<h2 id="关于请求路径的问题"><a href="#关于请求路径的问题" class="headerlink" title="关于请求路径的问题"></a>关于请求路径的问题</h2><ul>
+<li>?任意的字符，斜杠列外</li>
+<li>‘*’ 0 到n，任意字符都可以，不能含斜杠</li>
+<li>**  支持任意层路径  /m3/** 这样才可以体现出来 /m3/a/b</li>
+</ul>
+<h2 id="GetMapping、PostMapping请求"><a href="#GetMapping、PostMapping请求" class="headerlink" title="GetMapping、PostMapping请求"></a>GetMapping、PostMapping请求</h2><ul>
+<li>getMapping限定了只支持get请求</li>
+<li>postMapping限定了只支持post请求</li>
+</ul>
+<h3 id="关于post请求中文乱码的问题"><a href="#关于post请求中文乱码的问题" class="headerlink" title="关于post请求中文乱码的问题"></a>关于post请求中文乱码的问题</h3><p><img src="D:%5Cblog%5Csource_posts%5CImage%5C1567179165762.png" alt="1567179165762"></p>
+<h2 id="关于静态资源访问的问题"><a href="#关于静态资源访问的问题" class="headerlink" title="关于静态资源访问的问题"></a>关于静态资源访问的问题</h2><p>在springmvc中，某个静态资源的请求也会被当成在controller中的匹配，这当然是找不到资源的。</p>
+<ol>
+<li>将这些交给容器的默认的servlet处理，就不让DispatcherServlet来处理了。</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 默认的servlet处理者--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:default-servlet-handler</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>通过映射关系描述</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:resources</span> <span class="attr">mapping</span>=<span class="string">"static/css/*"</span> <span class="attr">location</span>=<span class="string">"static/css/"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="关于form表单提交数据的方式"><a href="#关于form表单提交数据的方式" class="headerlink" title="关于form表单提交数据的方式"></a>关于form表单提交数据的方式</h2><h3 id="方式一-通过属性名字绑定"><a href="#方式一-通过属性名字绑定" class="headerlink" title="方式一 通过属性名字绑定"></a>方式一 通过属性名字绑定</h3><p>通过属性名称进行绑定，可以完成数据传递</p>
+<p>页面当中表单元素的name值和后台的形参的名字保持一致</p>
+<h3 id="方式二-利用-RequestParam"><a href="#方式二-利用-RequestParam" class="headerlink" title="方式二 利用@RequestParam"></a>方式二 利用@RequestParam</h3><p>jsp页面不变</p>
+<p>在参数前使用该注解，名字与前台属性一致</p>
+<h3 id="方式三-直接使用pojo形式传递"><a href="#方式三-直接使用pojo形式传递" class="headerlink" title="方式三 直接使用pojo形式传递"></a>方式三 直接使用pojo形式传递</h3><p>表单中的属性名字要和pojo的属性一致</p>
+<h2 id="ModelAttrubute的用法"><a href="#ModelAttrubute的用法" class="headerlink" title="ModelAttrubute的用法"></a>ModelAttrubute的用法</h2><ol>
+<li>如果某些对象从头到尾每次请求当中都要存在，不消失，就适合这么用。也表示在controller里面的任意一个处理具体的方法之前都会执行</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ModelAttribute</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> User <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setName(<span class="string">"six"</span>);</span><br><span class="line">    <span class="keyword">return</span> user;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>方式二 </li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ModelAttribute</span>(<span class="string">"user"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setName(<span class="string">"six"</span>);</span><br><span class="line">    model.addAttribute(<span class="string">"user"</span>,user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.方式三 使用方式二的ModelAtrribute ，这种方式会直接去模型里面找</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequetMapping</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(@ModelAttribute User user)</span></span>&#123;</span><br><span class="line">    <span class="comment">//此时的user里面有初始化的init方法里里初始化的数据</span></span><br><span class="line">    <span class="comment">//当前台以pojo对象传入数据时，会覆盖之前的数据，即使用前台提交的数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JSON返回前台如何解析</p>
+<p>添加jackson依赖</p>
+<ol>
+<li>返回POJO</li>
+<li>返回Map</li>
+<li>返回数组</li>
+<li>返回List</li>
+</ol>
+<p>JSON数据如何使用ajax提交到前台</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;url:'',</span><br><span class="line">		type:'post',</span><br><span class="line">		contentType:'application/json',</span><br><span class="line">		data:JSON.stringify(obj),</span><br><span class="line">		success:function (data)&#123;</span><br><span class="line">&#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>后台获取数据时记得要添加@RequestBody注解</p>
+<p>以form表单上传数据与ajax发送数据的区别</p>
+<p>form表单提交数据它的contentType是属于Content-Type:application/x-www-form-urlencoded</p>
+<p>ajax发送JSON则是application/json</p>
+<h3 id="XML数据交互"><a href="#XML数据交互" class="headerlink" title="XML数据交互"></a>XML数据交互</h3><ol>
+<li>添加依赖</li>
+<li>方法返回数据类型的定义</li>
+</ol>
+<p>在@RequestMapping中定义生产的属性。</p>
+<h3 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h3><p>、1. 添加依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 添加fileupload的依赖--&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在springmvc单中注册一个文件上传解析器</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- id必须是multipartResolver，原因是源代码中为这个名字--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"multipartResolver"</span> <span class="attr">class</span>=<span class="string">"org.springframework...CommonsMultipartResolver"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"maxUploadSize"</span> <span class="attr">value</span>=<span class="string">"1024*1024"</span>&gt;</span><span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>后台接收代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/upload"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">upload</span><span class="params">(@RequestParam(<span class="string">"file"</span>)</span>MultipartFile multipartfile)</span>&#123;</span><br><span class="line">    <span class="comment">//1.传到哪里去，传什么东西</span></span><br><span class="line">    <span class="keyword">if</span> (multipartfile!=<span class="keyword">null</span> &amp;&amp; !multipartfile.isEmpty())&#123;</span><br><span class="line">        <span class="comment">//不空才传</span></span><br><span class="line">        <span class="comment">//2.构建原始文件名</span></span><br><span class="line">        String originalFilename = multipartfile.getoriginalFilename();</span><br><span class="line">        <span class="comment">//3.先截取源文件的文件名前缀，不带后缀</span></span><br><span class="line">        String fileNamePrefix = originalFilename.substring(<span class="number">0</span>,originalFilename.lastIndexOf(<span class="string">"."</span>));</span><br><span class="line">        <span class="comment">//4.加工处理文件名，将原文件+时间戳</span></span><br><span class="line">        String newFileNamePrefix = fileNamePrefix+<span class="keyword">new</span> Date().getTime();</span><br><span class="line">        <span class="comment">//5.得到新的文件名</span></span><br><span class="line">        String newFilename = newFileNamePrefix+originalFilename.subString(originalFilename.lastIndexOf(<span class="string">"."</span>));</span><br><span class="line">        <span class="comment">//6.构建文件对象</span></span><br><span class="line">        File file = <span class="keyword">new</span> File(uploadPath+newFilename);</span><br><span class="line">        <span class="comment">//7.上传</span></span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">        multipartFile.transferTo(file);</span><br><span class="line">        &#125;<span class="keyword">catch</span>()&#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.前台页面的form表单属性中的enctype为”multipart/form-data”</p>
+<h3 id="文件下载"><a href="#文件下载" class="headerlink" title="文件下载"></a>文件下载</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/down"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">down</span><span class="params">(HttpServletResponse response)</span></span>&#123;</span><br><span class="line">    String filename = <span class="string">""</span>;</span><br><span class="line">    </span><br><span class="line">    Path path = Paths.get(parentPath,filename);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//3.判断它是否存在</span></span><br><span class="line">    <span class="keyword">if</span> (Files.exist(path))&#123;</span><br><span class="line">        <span class="comment">//通过response设定它的响应的类型</span></span><br><span class="line">        <span class="comment">//4.获取文件的后缀</span></span><br><span class="line">        String fileSuffix = filename.substring(filename.lastIndexof(<span class="string">"."</span>)+<span class="number">1</span>);</span><br><span class="line">        <span class="comment">//5.添加头信息</span></span><br><span class="line">        <span class="comment">//6.设置contenttype，只有指定它才能去下载</span></span><br><span class="line">        response.setContentType(<span class="string">"application/"</span>+fileSuffix);</span><br><span class="line">        response.addHeader(<span class="string">"Content-Dispostion"</span>,<span class="string">"attachment;filename"</span>+<span class="keyword">new</span> String(filename.getByte(<span class="string">"UTF-8"</span>,<span class="string">"IOS8859-1"</span>));</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            File.copy(path,response.getOutputStream());</span><br><span class="line">        &#125;<span class="keyword">catch</span>()&#123;</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/25/springmvc/" data-id="ck00fj79b0002dwweqxxclbl5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2019/08/17/springboot/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/25/springmvc/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/17/springboot/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/12/ssm学习/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/10/我的第一篇博客文章/">我的第一篇博客文章</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/10/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
