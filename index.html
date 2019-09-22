@@ -62,6 +62,100 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-springboot学习" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/09/22/springboot学习/" class="article-date">
+  <time datetime="2019-09-22T08:33:15.385Z" itemprop="datePublished">2019-09-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/09/22/springboot学习/">spring boot 2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>@SpringBootConfiguration:Spring Boot配置类</p>
+<p>标注在哪个类上，表示这是一个Spring Boot的配置类</p>
+<p>@Configuration配置类上来标注这个注解</p>
+<p>配置类—–配置文件：配置类也是容器中的一个组件：@Component</p>
+<p>@EnableAutoConfiguration : 开启自动配置功能</p>
+<p>@AutoConfigurationPackage：自动配置包</p>
+<p>​            @Import(AutoConfigurationPackages.class)</p>
+<p>​            Spring的底层注解@Import，给容器中导入一个组件；导入的组件由AutoConfigurationPackages.Register.class</p>
+<p>​            将主配置类（@SpringBootApplication标注的类）的所在包所有组件扫描进Spring容器去。</p>
+<p>​            @Import(EnableAutoConfigurationImportSelector.class)</p>
+<p>​            给容器中导入组件</p>
+<p>​            EnableAutoConfigurationImportSelector：导入哪些组建的选择器；</p>
+<p>​            将所有需要导入的组件以全类名的方式返回，这些组件就会被添加到容器中；</p>
+<p>​            会给容器中导入非常多的自动配置类（XXXAutoConfiguration），就是给容器中导入这个场景需要的所有组件，并配置好这些组件；</p>
+<p>​            SpringFactoriesLoader.loadFactoryNames(EnableAutoConfiguration.class.classLoader)    </p>
+<p>Spring Boot在启动的时候 从类路径下的META-INF/spring.factories中获取EnableAutoConfiguration指定的值。将这些值作为自动配置类导入到容器中，自动配置类就生效，帮我们进行自动配置工作；</p>
+<p>@ConfigurationProperties：告诉SpringBoot将本类中的所有属性和配置文件中相关的配置进行绑定；prefix = “person” ，配置文件中哪个下面的所有属性进行一一映射，只有这个组件是容器中的组件，才能使用容器提供的@ConfigurationProperties功能；</p>
+<p>Profile</p>
+<p>·1. 多Profile文件</p>
+<p>我们在配置文件编写的时候，文件名可以是application-{profile}.properties/yml</p>
+<p>默认使用application.properties的配置；</p>
+<ol start="2">
+<li>yml支持多文档块方式</li>
+<li>激活指定profile<ol>
+<li>在配置文件中指定  spring.profiles.active=dev</li>
+</ol>
+</li>
+</ol>
+<h3 id="自动配置原理"><a href="#自动配置原理" class="headerlink" title="自动配置原理"></a>自动配置原理</h3><ol>
+<li><p>SpringBoot启动的时候加载主配置类。开启了自动配置功能@EnableAutoConfiguration</p>
+</li>
+<li><p>@EnableAutoConfiguration作用</p>
+<ul>
+<li><p>利用EnableAutoConfigurationImportSelector给容器中导入一些组件</p>
+</li>
+<li><p>可以插件 selectImport()方法的内容</p>
+</li>
+<li><p>List<string>configuration = getCandidateConfiguration(annotationMetadata ,attributes);获取候选的配置</string></p>
+</li>
+<li><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SpringFactoriesLoader.loadFactoryNames();</span><br><span class="line">扫描所有jar包类路径下 META-INF/spring.factories</span><br><span class="line">把扫描的这些文件的内容包装成properties对象</span><br><span class="line">从properties中获取到EnableAutoConfiguration.class类（类名）对应的值，然后把他们添加在容器中</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="日志"><a href="#日志" class="headerlink" title="日志"></a>日志</h3><h4 id="1、日志框架"><a href="#1、日志框架" class="headerlink" title="1、日志框架"></a>1、日志框架</h4><h3 id="Spring-Cloud-Eureka高可用注册中心"><a href="#Spring-Cloud-Eureka高可用注册中心" class="headerlink" title="Spring Cloud Eureka高可用注册中心"></a>Spring Cloud Eureka高可用注册中心</h3><ol>
+<li>创建项目 eureka-server，引入模块eureka-server模块</li>
+<li>在启动类中加一个注解@EnableEurekaServer</li>
+<li>用两个注册服务中心，都可以通过这个项目来实现，只不过需要开两个tomcat实例，模拟双服务注册中心的情况。</li>
+<li>进行配置，在运行前设置好对应的服务注册中心地址已经自身占据端口号，开启项目，就会发现有两个服务注册中心都启动了，并且通过路径的制定，他们相互注册，而且根据默认设置，他们甚至作为服务提供者注册到另外一方去。</li>
+</ol>
+<h3 id="网关服务"><a href="#网关服务" class="headerlink" title="网关服务"></a>网关服务</h3><p>在微服务中可以路由转发，权限控制，过滤，服务限流，黑白名单控制等等很多功能。</p>
+<p>类似的有zuul，nginx等。</p>
+<p>和服务注册中心完美结合</p>
+<h3 id="zuul的使用"><a href="#zuul的使用" class="headerlink" title="zuul的使用"></a>zuul的使用</h3><ol>
+<li>首先添加zuul的依赖，添加security依赖，eureka依赖；</li>
+<li>将zuul网关注册到服务注册中心</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/09/22/springboot学习/" data-id="ck0uq9veg0001mwwesuojiy4c" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-CCF游戏" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/09/03/CCF游戏/" class="article-date">
@@ -94,7 +188,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/03/CCF游戏/" data-id="ck03vy5el0000gcweaxdw8nh1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/09/03/CCF游戏/" data-id="ck0uq9v9v0000mwwemgyq0gtx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -135,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/25/springmvc/" data-id="ck03vy5eu0003gcweetlcfggh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/25/springmvc/" data-id="ck0uq9vem0004mwweiiz566ey" class="article-share-link">Share</a>
       
       
     </footer>
@@ -182,7 +276,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck03vy5et0002gcwenp6mms01" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck0uq9vek0003mwwernebg9cp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -232,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/12/ssm学习/" data-id="ck03vy5ev0004gcwef2s8lrfy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/12/ssm学习/" data-id="ck0uq9vet0006mwwe6s0ofkgz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -268,7 +362,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/10/我的第一篇博客文章/" data-id="ck03vy5ew0005gcwejear7f7t" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/10/我的第一篇博客文章/" data-id="ck0uq9ven0005mwwem5nekms9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -317,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/10/hello-world/" data-id="ck03vy5er0001gcweclf7z435" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/10/hello-world/" data-id="ck0uq9vei0002mwwe0jw6odsv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -358,6 +452,10 @@
       <ul>
         
           <li>
+            <a href="/2019/09/22/springboot学习/">spring boot 2</a>
+          </li>
+        
+          <li>
             <a href="/2019/09/03/CCF游戏/">CCF游戏-队列的使用</a>
           </li>
         
@@ -371,10 +469,6 @@
         
           <li>
             <a href="/2019/08/12/ssm学习/">ssm学习</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/10/我的第一篇博客文章/">我的第一篇博客文章</a>
           </li>
         
       </ul>
