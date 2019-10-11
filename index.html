@@ -85,173 +85,15 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="创建服务注册中心"><a href="#创建服务注册中心" class="headerlink" title="创建服务注册中心"></a>创建服务注册中心</h2><h3 id="首先创建一个-maven主工程"><a href="#首先创建一个-maven主工程" class="headerlink" title="首先创建一个 maven主工程"></a>首先创建一个 maven主工程</h3><p>首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。</p>
-<h3 id="创建2个model工程"><a href="#创建2个model工程" class="headerlink" title="创建2个model工程"></a>创建2个model工程</h3><p>一个model工程作为服务注册中心，即Eureka Server，另一个作为Eureka Client。</p>
-<p>Eureka Server的pom文件中引入依赖</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>启动服务注册中心，只需要在springboot工程的启动application类上加@EnableEurekaServer</p>
-<p><img src="F:%5CSoftWare%5CTypora%5Cimages%5C1568777851200.png" alt="1568777851200"></p>
-<p>通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">eureka.client.register-with-eureka = false</span><br><span class="line">eureka.client.fetchRegistry = false</span><br></pre></td></tr></table></figure>
-
-<h3 id="创建一个服务提供者（eureka-client）"><a href="#创建一个服务提供者（eureka-client）" class="headerlink" title="创建一个服务提供者（eureka client）"></a>创建一个服务提供者（eureka client）</h3><p>当client向server注册时，它会提供一些元数据，例如主机和端口，URL，主页等。Eureka server从每个client实例接收心跳信息。如果心跳超时，则通常将该实例从注册server中删除。在springboot启动类上添加@EnableEurekaClient注解。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>在微服务架构中，业务会被拆分成一个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。</p>
-<h3 id="服务消费者（rest-ribbon）"><a href="#服务消费者（rest-ribbon）" class="headerlink" title="服务消费者（rest+ribbon）"></a>服务消费者（rest+ribbon）</h3><p>Ribbon是一个负载均衡客户端，可以很好地控制http和tcp的一些行为。feign默认集成了ribbon。</p>
-<p>Ribbon已经默认实现了这些配置bean：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">IClientConfig</span> <span class="attr">ribbonClientConfig:</span> <span class="string">DefaultClientConfigImpl</span></span><br><span class="line"></span><br><span class="line"><span class="string">IRule</span> <span class="attr">ribbonRule:</span> <span class="string">ZoneAvoidanceRule</span></span><br><span class="line"></span><br><span class="line"><span class="string">IPing</span> <span class="attr">ribbonPing:</span> <span class="string">NoOpPing</span></span><br><span class="line"></span><br><span class="line"><span class="string">ServerList</span> <span class="attr">ribbonServerList:</span> <span class="string">ConfigurationBasedServerList</span></span><br><span class="line"></span><br><span class="line"><span class="string">ServerListFilter</span> <span class="attr">ribbonServerListFilter:</span> <span class="string">ZonePreferenceServerListFilter</span></span><br><span class="line"></span><br><span class="line"><span class="string">ILoadBalancer</span> <span class="attr">ribbonLoadBalancer:</span> <span class="string">ZoneAwareLoadBalancer</span></span><br></pre></td></tr></table></figure>
-
-<p>基于以上两个工程，首先启动eureka-server工程；启动service-hi工程，它的端口为8762；将service-hi的配置文件的端口改为8763，这时可以发现：service-hi在eureka-server注册了2两个实例，这相当于一个小的集群。</p>
-<p><b>创建一个服务消费者</b></p>
-<p>新建一个spring-boot工程，取名为service-ribbon；</p>
-<p>在它的pom.xml引入eureka-client、ribbon、spring boot启动依赖：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
-
-<p>另一个就是在工程的配置文件中指定服务的注册中心以及名字和端口号</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span> </span><br><span class="line"><span class="attr">  port:</span> <span class="number">8764</span></span><br><span class="line"> </span><br><span class="line"><span class="attr">eureka:</span> </span><br><span class="line"><span class="attr">  client:</span> </span><br><span class="line"><span class="attr">    service-url:</span></span><br><span class="line"><span class="attr">      defaultZone:</span> <span class="attr">http://localhost:9001/eureka/</span>    </span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span> </span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">service-ribbon</span></span><br></pre></td></tr></table></figure>
-
-<p><b>注意yml文件，以两个空格缩进，缩进不对无报错；而且每次都要以冒号加空格隔开</b></p>
-<p>然后再工程的启动类中，通过@EnableDiscoveryClient向服务中心注册，并且向程序的ioc注入一个bean:restTemplate，并通过LoadBalanced注解表明这个restRemplate开启负载均衡的功能。</p>
-<p>代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span>	<span class="comment">//加载注册中心</span></span><br><span class="line"><span class="meta">@EnableEurekaClient</span>	<span class="comment">//加载注册中心</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceRibbonStudyApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(ServiceRibbonStudyApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@LoadBalanced</span></span><br><span class="line">	<span class="function">RestTemplate <span class="title">restTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>写一个测试类HelloService，通过之前注入ioc容器的restTemplate来消费service-hi服务的“/hi”接口，在这里我们直接用程序名替代了具体的url地址，在ribbon中它会根据服务名来选择具体的服务实例，根据服务实例在请求的时候会用具体的url替换掉服务名，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloService</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">hiService</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		 <span class="keyword">return</span> restTemplate.getForObject(<span class="string">"http://SERVICE-HI/hi?name="</span>+name, String.class);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>写一个controller，在controller中调用HelloService的方法，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	HelloService helloService;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@GetMapping</span>(value=<span class="string">"/hi"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">hi</span><span class="params">(@RequestParam String name)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> helloService.hiService(name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在浏览器上多次访问<a href="http://localhost:8764/hi?name=ribbon，浏览器中交替显示：" target="_blank" rel="noopener">http://localhost:8764/hi?name=ribbon，浏览器中交替显示：</a></p>
-<blockquote>
-<p>hi ribbon, i am form port:8762</p>
-<p>hi ribbon, i am form port:8763</p>
-</blockquote>
-<p>这说明当我们通过调用restTemplate.getForObject(“<a href="http://SERVICE-HI/hi?name=&quot;+name" target="_blank" rel="noopener">http://SERVICE-HI/hi?name=&quot;+name</a> , String.class)方法时，已经做了负载均衡，访问了不同的端口的服务实例。</p>
-<h3 id="服务消费者（Feign）"><a href="#服务消费者（Feign）" class="headerlink" title="服务消费者（Feign）"></a>服务消费者（Feign）</h3><p>Feign是一个声明式的伪Http客户端，它使得写Http客户端变得简单。使用Feign，只需要创建一个接口并注解。它具有可插拔的注解特性，可使用Feign注解和JAX-RS注解。Feign支持可插拔的编码器和解码器。Feign默认继承了Ribbon，并和Eureka结合，默认实现了负载均衡的效果。</p>
-<p>即：</p>
-<ul>
-<li>Feign采用的是基于接口的注解</li>
-<li>Feign整合了ribbon</li>
-</ul>
-<p>准备工作，启动eureka-server，端口为8761；启动service-hi两次，端口分别为8762,8763</p>
-<p><b>创建一个feign服务</b></p>
-<p>新建一个spring-boot工程，取名为service-feign，在pom.xml文件中引入Feign的起步依赖spring-cloud-starter-openfeign，Eureka的起步依赖spring-cloud-starter-netflix-eureka-client，Web的起步依赖spring-boot-starter-web。</p>
-<p>代码如下：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-openfeign<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>然后在工程的配置文件application.yml，制定程序名为service-feign，端口号为8765，服务注册地址为<a href="http://localhost:9001/eureka/" target="_blank" rel="noopener">http://localhost:9001/eureka/</a> 。代码如下：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8770</span></span><br><span class="line">  </span><br><span class="line"><span class="attr">eureka:</span> </span><br><span class="line"><span class="attr">  client:</span> </span><br><span class="line"><span class="attr">    service-url:</span></span><br><span class="line"><span class="attr">      defaultZone:</span> <span class="attr">http://localhost:9001/eureka/</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">service-feign</span></span><br></pre></td></tr></table></figure>
-
-<p>在程序的启动类，加上@EnableFeignClients注解开启Feign的功能：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="meta">@EnableFeignClients</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceFeignStudyApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(ServiceFeignStudyApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>定义一个Feign接口，通过@FeignClient(“服务名”)，来制定调用那哪个服务。这里我们在代码中调用了service-hi服务的”/hi”接口，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"service-hi"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Ifeignservice</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(value= <span class="string">"/hi"</span> , method=RequestMethod.GET)</span><br><span class="line">	<span class="function">String <span class="title">sayHiFromClientOne</span><span class="params">(@RequestParam(value=<span class="string">"name"</span>)</span> String name)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在Web层的controller层，对外暴露一个”/hi”的API接口，通过上面定义的Feign客户端Ifeignservice来消费服务，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HiController</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	Ifeignservice ifeignservice;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@RequestMapping</span>(value=<span class="string">"/hi"</span> , method=RequestMethod.GET)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">sayHi</span><span class="params">(@RequestParam(value = <span class="string">"name"</span>)</span> String name) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ifeignservice.sayHiFromClientOne(name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在浏览器上多次访问<a href="http://localhost:8764/hi?name=ribbon，浏览器中交替显示：" target="_blank" rel="noopener">http://localhost:8764/hi?name=ribbon，浏览器中交替显示：</a></p>
-<blockquote>
-<p>hi ribbon, i am form port:8762</p>
-<p>hi ribbon, i am form port:8763</p>
-</blockquote>
-<h3 id="断路器（Hystrix）"><a href="#断路器（Hystrix）" class="headerlink" title="断路器（Hystrix）"></a>断路器（Hystrix）</h3><p>在微服务架构中，根据业务来拆分成一个个的服务，服务与服务之间可以相互调用（RPC），在Spring Cloud可以用RestTemplate+Ribbon和Feign来调用。为了保证其高可用，单个服务通常会集群部署。由于网络原因或者自身原因，服务并不能保证100%可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的“雪崩”效应。</p>
-<p>准备工作：启动service-eureka工程，启动service-hi工程，它的端口为8762.</p>
-<p><b>在Ribbon中使用断路器</b></p>
-<p>改造service-ribbon的代码，首先在pom.xml文件中加入spring-cloud-starter-netflix-hystrix起步依赖。</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>然后在程序的启动类中加@EnableHystrix注解开启Hystrix</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span>	<span class="comment">//加载注册中心</span></span><br><span class="line"><span class="meta">@EnableEurekaClient</span>	<span class="comment">//加载注册中心</span></span><br><span class="line"><span class="meta">@EnableHystrix</span>	<span class="comment">//使用断路器</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceRibbonStudyApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(ServiceRibbonStudyApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="meta">@LoadBalanced</span></span><br><span class="line">	<span class="function">RestTemplate <span class="title">restTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>改造HelloService类，在hiService方法上加上@HystrixCommand注解。该注解对 该方法创建了熔断器的功能，并指定了fallbackMethod熔断方法，熔断方法直接返回一个字符串，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloService</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Autowired</span></span><br><span class="line">	RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@HystrixCommand</span>(fallbackMethod = <span class="string">"hiError"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">hiService</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		 <span class="keyword">return</span> restTemplate.getForObject(<span class="string">"http://SERVICE-HI/hi?name="</span>+name, String.class);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">hiError</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">"hi，"</span> + name +<span class="string">"，sorry,error!"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>启动service-ribbon工程，当我们访问<a href="http://localhost:8764/hi?name=ribbon，浏览器显示" target="_blank" rel="noopener">http://localhost:8764/hi?name=ribbon，浏览器显示</a></p>
-<blockquote>
-<p>hi ribbon,i am from port:8762</p>
-</blockquote>
-<p>此时关闭service-hi工程，当我们再访问<a href="http://localhost:8764/hi?name=ribbon，浏览器显示" target="_blank" rel="noopener">http://localhost:8764/hi?name=ribbon，浏览器显示</a></p>
-<blockquote>
-<p>hi, ribbon,sorry,error!</p>
-</blockquote>
-<p>这就说明当service-hi工程不可用的时候，service-ribbon调用service-hi的API接口时，会执行快速失败，直接返回一组字符串，而不是等待响应超时，这很好的控制了容器的线程阻塞。</p>
-<h3 id="Feign中使用断路器"><a href="#Feign中使用断路器" class="headerlink" title="Feign中使用断路器"></a>Feign中使用断路器</h3><p>Feign是自带断路器的，在D版本的Spring Cloud之后，它没有默认打开。需要在配置文件中配置打开它，在配置文件加以下代码：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">feign:</span></span><br><span class="line"><span class="attr">  hystrix:</span></span><br><span class="line"><span class="attr">    enabled:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
-<p>基于service-feign工程进行改造，只需要在FeignClient的Ifeignservice接口注解总加上fallback的指定类就行了：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FeignClient</span>(value = <span class="string">"service-hi"</span> ,fallback = feignserviceHystric.class)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Ifeignservice</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(value= <span class="string">"/hi"</span> , method=RequestMethod.GET)</span><br><span class="line">	<span class="function">String <span class="title">sayHiFromClientOne</span><span class="params">(@RequestParam(value=<span class="string">"name"</span>)</span> String name)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>feignserviceHystric需要实现Ifeignservice接口，并注入到Ioc容器中，代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">feignserviceHystric</span> <span class="keyword">implements</span> <span class="title">Ifeignservice</span></span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">sayHiFromClientOne</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="string">"sorry "</span>+ name;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>启动service-feign工程，浏览器打开<a href="http://localhost:8765/hi?name=feign，注意此时service-hi工程没有启动，网页显示：" target="_blank" rel="noopener">http://localhost:8765/hi?name=feign，注意此时service-hi工程没有启动，网页显示：</a></p>
-<blockquote>
-<p>sorry feign</p>
-</blockquote>
-<p>打开service-hi工程之后，在此访问，浏览器显示：</p>
-<blockquote>
-<p>service-hi的启动端口为8762。当service-hi启动8762,8763的端口时，也会交替显示。</p>
-<p>hi feign, i am from port:8762</p>
-</blockquote>
-<p>即断路器起作用了。</p>
-<h3 id="路由网关（Zuul）"><a href="#路由网关（Zuul）" class="headerlink" title="路由网关（Zuul）"></a>路由网关（Zuul）</h3><p>在Spring Cloud微服务系统中，一种常见的负载均衡方式是，客户端的请求首先经过负载均衡（zuul、Ngnix），再到达服务网关（zuul集群），然后再到具体的服务，服务统一注册到高可用的服务注册中心集群，服务的所有的配置文件由配置服务管理，配置服务的配置文件放在git仓库，方便开发人员随便改配置。</p>
-<p><b>Zuul简介</b></p>
-<p>Zuul的主要功能是路由转发和过滤器。路由功能是微服务的一部分，比如/api/user转发到user服务，/api/shop转发到shop服务，zuul默认和Ribbon结合实现了负载均衡的功能</p>
-<p><b>创建一个工程</b></p>
-<p>其pom.xml文件中导入如下依赖：</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-zuul<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>在项目启动类加上注解@EnableZuulProxy，开启zuul的功能</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableZuulProxy</span></span><br><span class="line"><span class="meta">@EnableEurekaClient</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ServiceZuulStudyApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(ServiceZuulStudyApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后配置文件application.yml加上一下的配置代码：</p>
-<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  application:</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">service-zuul</span></span><br><span class="line">    </span><br><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8769</span></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line"><span class="attr">  client:</span></span><br><span class="line"><span class="attr">    service-url:</span></span><br><span class="line"><span class="attr">      defaultZone:</span> <span class="attr">http://localhost:9001/eureka/</span></span><br><span class="line"></span><br><span class="line"><span class="attr">zuul:</span></span><br><span class="line"><span class="attr">  routes:</span></span><br><span class="line"><span class="attr">    api-a:</span> </span><br><span class="line"><span class="attr">      path:</span> <span class="string">/api-a/**</span></span><br><span class="line"><span class="attr">      service-id:</span> <span class="string">service-ribbon</span></span><br><span class="line"><span class="attr">    api-b:</span> </span><br><span class="line"><span class="attr">      path:</span> <span class="string">/api-b/**</span></span><br><span class="line"><span class="attr">      service-id:</span> <span class="string">service-feign</span></span><br></pre></td></tr></table></figure>
-
-<p>配置文件中以/api-a/开头的请求都转发给service-ribbon服务，以api-b开头的请求都转发给service-feign服务</p>
-<p>依次运行5个工程，eureka-server、eureka-client、service-ribbon、service-feign、service-zuul</p>
-<p>在浏览器中访问：<a href="http://localhost:8769/api-a/hi?name=ribbon，浏览器显示：" target="_blank" rel="noopener">http://localhost:8769/api-a/hi?name=ribbon，浏览器显示：</a></p>
-<blockquote>
-<p>hi ribbon,i am form port:8762</p>
-</blockquote>
-<p>在浏览器中访问：<a href="http://localhost:8769/api-b/hi?name=ribbon，浏览器显示：" target="_blank" rel="noopener">http://localhost:8769/api-b/hi?name=ribbon，浏览器显示：</a></p>
-<blockquote>
-<p>hi ribbon,i am form port:8762</p>
-</blockquote>
-<p>上面端口为8762时eureka-client的端口</p>
-<p><b>服务过滤</b></p>
-<p>Zuul 不仅只是路由，并且还能做过滤，做一些安全验证。</p>
-<p>创建一个继承ZuulFilter的过滤器</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyFilter</span> <span class="keyword">extends</span> <span class="title">ZuulFilter</span>	</span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> ZuulException </span>&#123;</span><br><span class="line">		RequestContext requestContext = RequestContext.getCurrentContext();</span><br><span class="line">		HttpServletRequest httpServletRequest = requestContext.getRequest();</span><br><span class="line">		Object accesstoken = httpServletRequest.getParameter(<span class="string">"token"</span>);</span><br><span class="line">		<span class="keyword">if</span> (accesstoken==<span class="keyword">null</span>) &#123;</span><br><span class="line">			requestContext.setSendZuulResponse(<span class="keyword">false</span>);</span><br><span class="line">			requestContext.setResponseStatusCode(<span class="number">401</span>);</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				requestContext.getResponse().getWriter().write(<span class="string">"token is empty"</span>);</span><br><span class="line">			&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">shouldFilter</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">filterOrder</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">filterType</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="string">"pre"</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>filterType: 返回一个字符串代表过滤器的类型，在zuul中定义了四中不同生命周期的过滤器类型，具体如下：</p>
-<p>pre：路由之前</p>
-</li>
-</ul>
-<p>​       routing： 路由之时</p>
-<p>​       post： 路由之后</p>
-<p>​       error： 发送错误调用</p>
-<ul>
-<li>filterOrder： 过滤的顺序</li>
-<li>shouldFilter：可以写逻辑判断，是否要过滤，本位true，永远过滤</li>
-<li>run：过滤器的具体逻辑。可以查sql，nosql去判断该请求到底有没有访问权限</li>
-</ul>
-<p>在浏览器中访问：<a href="http://localhost:8769/api-a/hi?name=ribbon，浏览器显示：" target="_blank" rel="noopener">http://localhost:8769/api-a/hi?name=ribbon，浏览器显示：</a></p>
-<blockquote>
-<p>token is empty</p>
-</blockquote>
-<p>在浏览器中访问：<a href="http://localhost:8769/api-a/hi?name=ribbon&amp;token=11，浏览器显示：" target="_blank" rel="noopener">http://localhost:8769/api-a/hi?name=ribbon&amp;token=11，浏览器显示：</a></p>
-<blockquote>
-<p>hi ribbon,i am form port:8762</p>
-</blockquote>
-
+        
+          <p class="article-more-link">
+            <a href="/2019/09/22/Spring_Cloud_study/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/22/Spring_Cloud_study/" data-id="ck0uqjs8d00079wwebota1tax" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/09/22/Spring_Cloud_study/" data-id="ck1m542mj00072owecvddedm9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -345,7 +187,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/22/springboot学习/" data-id="ck0uqjs8300039wwe3ozdjuw1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/09/22/springboot学习/" data-id="ck1m542lv00022oweglqpidxs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -387,7 +229,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/03/CCF游戏/" data-id="ck0uqjs7s00009wwevg6oqxxn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/09/03/CCF游戏/" data-id="ck1m542lm00002ower1pqemjm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -428,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/25/springmvc/" data-id="ck0uqjs8600069wwem7tqlgav" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/25/springmvc/" data-id="ck1m542lx00032owervpv3esx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -475,7 +317,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck0uqjs8100029wwe55ec7w7q" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/17/springboot/" data-id="ck1m542ly00042owegzjyz2ue" class="article-share-link">Share</a>
       
       
     </footer>
@@ -525,7 +367,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/08/12/ssm学习/" data-id="ck0uqjs8500059wweuxvruvfc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/08/12/ssm学习/" data-id="ck1m542lz00052oweb9vn1qjt" class="article-share-link">Share</a>
       
       
     </footer>
@@ -561,7 +403,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/10/我的第一篇博客文章/" data-id="ck0uqjs8400049wwem0loq6if" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/10/我的第一篇博客文章/" data-id="ck1m542m100062owe8wd9fzax" class="article-share-link">Share</a>
       
       
     </footer>
@@ -610,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/10/hello-world/" data-id="ck0uqjs7z00019wwevtxcd9wp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/10/hello-world/" data-id="ck1m542lt00012owez1bfz9db" class="article-share-link">Share</a>
       
       
     </footer>

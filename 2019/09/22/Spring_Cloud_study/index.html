@@ -7,18 +7,18 @@
   
   <title>Spring_Cloud学习 9/22 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。 创建2个model工程一个model工程作为服务注册中心，即Eureka Server，">
+  <meta name="description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Spring_Cloud学习 9&#x2F;22">
 <meta property="og:url" content="http://yoursite.com/2019/09/22/Spring_Cloud_study/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。 创建2个model工程一个model工程作为服务注册中心，即Eureka Server，">
+<meta property="og:description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="f:%5CSoftWare%5CTypora%5Cimages%5C1568777851200.png">
-<meta property="og:updated_time" content="2019-09-22T08:43:44.452Z">
+<meta property="og:updated_time" content="2019-10-11T12:59:30.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring_Cloud学习 9&#x2F;22">
-<meta name="twitter:description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。 创建2个model工程一个model工程作为服务注册中心，即Eureka Server，">
+<meta name="twitter:description" content="创建服务注册中心首先创建一个 maven主工程首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。">
 <meta name="twitter:image" content="f:%5CSoftWare%5CTypora%5Cimages%5C1568777851200.png">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -89,6 +89,8 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="创建服务注册中心"><a href="#创建服务注册中心" class="headerlink" title="创建服务注册中心"></a>创建服务注册中心</h2><h3 id="首先创建一个-maven主工程"><a href="#首先创建一个-maven主工程" class="headerlink" title="首先创建一个 maven主工程"></a>首先创建一个 maven主工程</h3><p>首先创建一个主Maven工程，在其pom文件引入依赖，spring Boot版本为2.x.x.RELEASE，Spring Cloud版本为Finchley.RELEASE。这个pom文件作为父pom文件，起到依赖版本控制的作用，其他module工程继承该pom。</p>
+<a id="more"></a>
+
 <h3 id="创建2个model工程"><a href="#创建2个model工程" class="headerlink" title="创建2个model工程"></a>创建2个model工程</h3><p>一个model工程作为服务注册中心，即Eureka Server，另一个作为Eureka Client。</p>
 <p>Eureka Server的pom文件中引入依赖</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
@@ -255,7 +257,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/09/22/Spring_Cloud_study/" data-id="ck0uqjs8d00079wwebota1tax" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/09/22/Spring_Cloud_study/" data-id="ck1m542mj00072owecvddedm9" class="article-share-link">Share</a>
       
       
     </footer>
